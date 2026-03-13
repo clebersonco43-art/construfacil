@@ -1,0 +1,24 @@
+construfacil
+│
+├ package.json
+├ vite.config.js
+├ index.html
+├ tailwind.config.js
+├ postcss.config.js
+│
+└ src
+   ├ main.jsx
+   ├ App.jsx
+   ├ index.css
+   │
+   ├ utils
+   │  └ createPageUrl.js
+   │
+   ├ components
+   │  └ Layout.jsx
+   │
+   └ pages
+      ├ Home.jsx
+      ├ Stores.jsx
+      ├ MyServices.jsx
+      └ MyBookings.jsx
