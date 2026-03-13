@@ -1,0 +1,147 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "./utils";
+import { Hammer, Menu, X, Home, Wrench, Wallet, Trophy, Store, MessageCircle, Calendar, LogOut } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+
+const navItems = [
+  { name: "Início", page: "Home", icon: Home },
+  { name: "Lojas", page: "Stores", icon: Store },
+  { name: "Agendamentos", page: "MyBookings", icon: Calendar },
+  { name: "Conversas", page: "Chats", icon: MessageCircle },
+  { name: "Meus Serviços", page: "MyServices", icon: Wrench },
+  { name: "Minha Loja", page: "MyStore", icon: Store },
+  { name: "Finanças", page: "Finances", icon: Wallet },
+  { name: "Fidelidade", page: "Loyalty", icon: Trophy },
+];
+
+export default function Layout({ children, currentPageName }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <style>{`
+        :root {
+          --color-primary: #f59e0b;
+          --color-primary-dark: #d97706;
+        }
+        body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+      `}</style>
+
+      {/* Top Nav */}
+      <nav className="bg-white/80 backdrop-blur-lg border-b border-slate-100 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16">
+            <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center">
+                <Hammer className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-bold text-slate-900 text-lg tracking-tight hidden sm:block">
+                ConstruFácil
+              </span>
+            </Link>
+
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = currentPageName === item.page;
+                return (
+                  <Link key={item.page} to={createPageUrl(item.page)}>
+                    <button
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                        active
+                          ? "bg-amber-50 text-amber-700"
+                          : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {item.name}
+                    </button>
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => base44.auth.logout()}
+                className="text-slate-400 hover:text-slate-600 hidden md:flex rounded-xl"
+              >
+                <LogOut className="w-4 h-4 mr-1" />
+                Sair
+              </Button>
+
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="md:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-100"
+              >
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-slate-100 bg-white p-4 space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = currentPageName === item.page;
+              return (
+                <Link
+                  key={item.page}
+                  to={createPageUrl(item.page)}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <div className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                    active ? "bg-amber-50 text-amber-700" : "text-slate-600 hover:bg-slate-50"
+                  }`}>
+                    <Icon className="w-4 h-4" />
+                    {item.name}
+                  </div>
+                </Link>
+              );
+            })}
+            <button
+              onClick={() => base44.auth.logout()}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 w-full"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair
+            </button>
+          </div>
+        )}
+      </nav>
+
+      <main>{children}</main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-100 mt-auto">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center">
+                <Hammer className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-sm text-slate-600">© 2026 ConstruFácil</span>
+            </div>
+            <div className="flex gap-6 text-sm">
+              <Link to={createPageUrl("TermsOfService")} className="text-slate-600 hover:text-amber-600 transition-colors">
+                Termos de Uso
+              </Link>
+              <a href="mailto:contato@construfacil.com.br" className="text-slate-600 hover:text-amber-600 transition-colors">
+                Contato
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
